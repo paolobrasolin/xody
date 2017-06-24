@@ -1,50 +1,55 @@
 require 'yaml'
+require 'digest'
 
 f = File.open('test.tex').read
 xys = f.scan(/(\\xymatrix[^{}]*?\{([^{}]*?((\{(\g<2>)?\}[^{}]*?)?)*)\})/).map(&:first)
 
-ms = []
+xys_h = {}
 
 xys.each do |xy|
-  m = xy.match(/\\xymatrix([^{}]*?)\{([^{}]*?((\{(\g<2>)?\}[^{}]*?)?)*)\}/)
-  ms << m[2].split('\\\\').map { |r| r.split('&') }
+  digest = Digest::MD5.hexdigest xy
+  f = f.sub xy, "[#{digest}]"
+  xys_h[digest] = xy
 end
 
+xys_processed = xys_h.map do |d,xy|
 
-ms.each do |m|
+  content = xy.match(/\\xymatrix([^{}]*?)\{([^{}]*?((\{(\g<2>)?\}[^{}]*?)?)*)\}/)[2]
+  rs = content.split('\\\\').map { |r| r.split('&') }
 
-  puts "\n\\begin{kodi}"
 
-  kodi_m = ""
-
-  col_num = m.map(&:count).max
-
-  m.each_with_index do |r, i|
+  kd_obj = ""
+  col_num = rs.map(&:count).max
+  rs.each_with_index do |r, i|
     rr = r.map { |c| c.split('\\ar').first.strip }.fill('', r.length..col_num)
-    kodi_m << rr.join(' & ') + '\\\\'
+    kd_obj << rr.join(' & ') + '\\\\'
   end
+  kd_obj = "\\obj (m) {#{kd_obj}};\n"
 
-  puts "\\obj (m) {#{kodi_m}};"
-
-  m.each_with_index do |r, i|
+  kd_mors = ""
+  rs.each_with_index do |r, i|
     r.each_with_index do |c, j|
-      c = {
-        code: c.split('\\ar').first,
-        arse: c.split('\\ar')[1..-1]
-      }
-      c[:arse].each do |a|
-        d = a.match(/[^\[]*\[(.*)\].*/)[1]
+      c.split('\\ar')[1..-1].each do |a|
+        direction = a.match(/[^\[]*\[(.*)\].*/)[1]
         ar = {
           sx: (1 + i),
           sy: (1 + j),
-          tx: (1 + i) + d.count('r') - d.count('l'),
-          ty: (1 + j) + d.count('d') - d.count('u')
+          tx: (1 + i) + direction.count('r') - direction.count('l'),
+          ty: (1 + j) + direction.count('d') - direction.count('u')
         }
-        puts "\\mor (m-#{ar[:sx]}-#{ar[:sy]}) -> (m-#{ar[:tx]}-#{ar[:ty]});"
+        kd_mors << "\\mor (m-#{ar[:sx]}-#{ar[:sy]}) -> (m-#{ar[:tx]}-#{ar[:ty]});\n"
       end
     end
   end
 
-  puts "\\end{kodi}\n"
+  kodi = "\\begin{kodi}\n" + kd_obj + kd_mors + "\\end{kodi}\n"
 
+  [d,kodi]
+end.to_h
+
+xys_processed.each do |digest, kodi|
+  replacement = '#'*80 + "\n" + xys_h[digest] +  "\n" + '#'*80 + "\n" + kodi + '#'*80
+  f = f.sub "[#{digest}]", replacement
 end
+
+puts f
