@@ -1,0 +1,17 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    parslet (1.8.0)
+    polyglot (0.3.5)
+    treetop (1.6.8)
+      polyglot (~> 0.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  parslet
+  treetop
+
+BUNDLED WITH
+   1.15.1

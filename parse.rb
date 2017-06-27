@@ -48,7 +48,7 @@ xys_processed = xys_h.map do |d,xy|
 end.to_h
 
 xys_processed.each do |digest, kodi|
-  replacement = '#'*80 + "\n" + xys_h[digest] +  "\n" + '#'*80 + "\n" + kodi + '#'*80
+  replacement = '<'*7 + "\n" + xys_h[digest] +  "\n" + '='*7 + "\n" + kodi + '>'*7
   f = f.sub "[#{digest}]", replacement
 end
 
