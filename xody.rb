@@ -100,7 +100,7 @@ end
 
 
 
-puts parse "\\ar@(ul,r)@{=>}[ul]^{wot}_f"
+# puts parse "\\ar@(ul,r)@{=>}[ul]^{wot}_f"
 
 # puts "Undelimited single row"
 
