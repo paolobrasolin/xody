@@ -1,9 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'treetop'
 gem 'parslet'
 
-group :test do
-  gem 'simplecov'
+group :development do
   gem 'rspec'
+  gem 'guard'
+  gem 'guard-rspec'
+  gem 'simplecov'
 end

@@ -4,14 +4,14 @@ SimpleCov.start
 require 'rspec'
 require 'parslet/rig/rspec'
 
-require_relative '../xody.rb'
+require_relative '../lib/xody.rb'
 
 describe XY do
   let(:parser) { XY.new }
 
   describe :hop do
     subject { parser.hop }
-    it { is_expected.not_to parse('[]') } # TODO: is this correct?
+    it { is_expected.to parse('[]') }
     it { is_expected.to parse('[u]') }
     it { is_expected.to parse('[l]') }
     it { is_expected.to parse('[uu]') }
