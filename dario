@@ -1,0 +1,14 @@
+
+\xymatrix{
+X\ar[r]\ar[d]_{f}&0\ar[d]\\
+Y\ar[r]^-{c_f}&\coker(f)
+}
+
+\begin{kodi}
+  \obj{
+    X & 0         \\
+    Y & \coker{f} \\
+  };
+  \mor X -> 0 -> (coker f);
+  \mor * f:-> Y "c_f":-> *;
+\end{kodi}
