@@ -12,22 +12,22 @@ class XY < Parslet::Parser
 
   rule(:cell) { match['a-z'].repeat.as(:cell) }
   rule(:cells) do
-    ( cell.maybe >> str('&') ).repeat >>
-    cell.maybe >> ( str('\\') | str('}') ).present?
+    (cell.maybe >> str('&')).repeat >>
+    cell.maybe >> (str('\\') | str('}')).present?
   end
   rule(:row) { cells.as(:row) }
   rule(:rows) do
-    ( row.maybe >> str('\\') ).repeat >>
-    ( str('}').absent? >> row ).maybe >> str('}').present?
+    (row.maybe >> str('\\')).repeat >>
+    (str('}').absent? >> row).maybe >> str('}').present?
   end
 
   rule(:text) { match['a-zA-Z '].repeat(1) }
   rule(:space) { str(' ') }
   rule(:code) do
-    ( macro | group | text ).repeat
+    (macro | group | text).repeat
   end
   rule(:macro) do
-    ( str('\\') >> match['a-zA-Z@'].repeat >> space.repeat ).as(:macro)
+    (str('\\') >> match['a-zA-Z@'].repeat >> space.repeat).as(:macro)
   end
   rule(:group) { str('{') >> code.maybe.as(:group) >> str('}') }
 
@@ -43,38 +43,38 @@ class XY < Parslet::Parser
 
   rule(:length) do # TODO: check all formats
     match['0-9'].repeat >>
-      ( str('.') >> match['0-9'].repeat ).maybe >>
+      (str('.') >> match['0-9'].repeat).maybe >>
       unit
   end
 
   rule(:directions) do # TODO: are directions that rigid?
     str('@(') >>
       (
-        ( ( match['ud'] >> match['rl'] ) | match['ud'] | match['rl'] ) >>
+        ((match['ud'] >> match['rl']) | match['ud'] | match['rl']) >>
         str(',') >>
-        ( ( match['ud'] >> match['rl'] ) | match['ud'] | match['rl'] )
-      ).as(:directions) >>
+        ((match['ud'] >> match['rl']) | match['ud'] | match['rl'])
+     ).as(:directions) >>
       str(')')
   end
 
   rule(:curving) do
     str('@/') >>
       (
-        ( str('^') | str('_') ).as(:direction) >>
+        (str('^') | str('_')).as(:direction) >>
         length.maybe.as(:length)
-      ).as(:curving) >>
+     ).as(:curving) >>
       str('/')
   end
 
   rule(:hop) do
     str('[') >>
-      match['urld'].repeat(1).as(:hop) >>
+      match['urld'].repeat.as(:hop) >>
       str(']')
   end
 
   rule(:label) do
-    ( str('^') | str('|') | str('_') ).as(:position) >>
-      ( str('-') ).as(:place).maybe >>
+    (str('^') | str('|') | str('_')).as(:position) >>
+      (str('-')).as(:place).maybe >>
       code.as(:content)
   end
 
@@ -85,7 +85,7 @@ class XY < Parslet::Parser
       style >>
       hop >>
       label.as(:label).repeat
-    ).as(:arrow)
+   ).as(:arrow)
   end
 
   root(:arrow)
