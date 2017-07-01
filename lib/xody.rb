@@ -45,12 +45,13 @@ class XY < Parslet::Parser
     #   str('}')
   end
 
-  rule(:unit) do # TODO: insert all units
-    str('pt') | str('em') | str('sp') | str('in')
+  rule(:unit) do 
+    str('pt') | str('em') | str('sp') | str('in') | str('pc') | str('mm') | str('cm')
   end
 
   rule(:length) do # TODO: check all formats
-    match['0-9'].repeat >>
+      (str('+') | str('-')).maybe >>
+      match['0-9'].repeat >>
       (str('.') >> match['0-9'].repeat).maybe >>
       unit
   end
@@ -78,6 +79,14 @@ class XY < Parslet::Parser
     str('[') >>
       match['urld'].repeat.as(:hop) >>
       str(']')
+  end
+
+  rule(:arrow_slide) do
+    str('<') >>
+      (str('+') | str('-')) >>
+      match['[0-9]'].repeat >>
+      rule(:length) >>
+      str('>')
   end
 
   rule(:label) do
