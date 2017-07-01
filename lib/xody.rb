@@ -98,39 +98,3 @@ class XY < Parslet::Parser
 
   root(:group)
 end
-
-def parse(str)
-  xy = XY.new.parse(str)
-  xy
-rescue Parslet::ParseFailed => failure
-  puts failure.parse_failure_cause.ascii_tree
-end
-
-
-
-puts parse "{_{(}->}"
-
-# puts "Undelimited single row"
-
-# puts parse("\\xymatrix{}")
-# puts parse("\\xymatrix{a}")
-# puts parse("\\xymatrix{a&}")
-# puts parse("\\xymatrix{a&b}")
-# puts parse("\\xymatrix{a&b&}")
-# puts parse("\\xymatrix{a&b&c}")
-
-# puts "Delimited single row"
-
-# puts parse("\\xymatrix{\\}")
-# puts parse("\\xymatrix{a\\}")
-# puts parse("\\xymatrix{a&\\}")
-# puts parse("\\xymatrix{a&b\\}")
-# puts parse("\\xymatrix{a&b&\\}")
-# puts parse("\\xymatrix{a&b&c\\}")
-
-# puts "Multiple rows"
-
-# puts parse("\\xymatrix{a\\\\}")
-# puts parse("\\xymatrix{a\\\\\\}")
-# puts parse("\\xymatrix{a\\\\\\&&}")
-# puts parse("\\xymatrix{a&b&c\\d&e&f\\g&h&i\\}")
