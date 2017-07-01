@@ -9,5 +9,9 @@ describe XY do
     it { is_expected.to parse('^f') }
     it { is_expected.to parse('|g') }
     it { is_expected.to parse('_h') }
+    it { is_expected.to parse('^{f}') }
+    it { is_expected.to parse('^\\foo') }
+    it { is_expected.to parse('^-f') }
+    it { is_expected.to parse('^<<f') }
   end
 end

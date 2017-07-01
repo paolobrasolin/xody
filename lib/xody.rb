@@ -29,12 +29,20 @@ class XY < Parslet::Parser
   rule(:macro) do
     (str('\\') >> match['a-zA-Z@'].repeat >> space.repeat).as(:macro)
   end
-  rule(:group) { str('{') >> code.maybe.as(:group) >> str('}') }
+
+  rule(:group) do
+    str('{') >>
+      match['^{}'].repeat >>
+      group.maybe >>
+      match['^{}'].repeat >>
+      str('}')
+  end
 
   rule(:style) do # NOTE: empty style must be valid
-    str('@{') >>
-      match['=.:>~>-'].repeat.as(:style) >>
-      str('}')
+    str('@') >> group
+    # str('@{') >>
+    #   match['=.:>~>-'].repeat.as(:style) >>
+    #   str('}')
   end
 
   rule(:unit) do # TODO: insert all units
@@ -88,7 +96,7 @@ class XY < Parslet::Parser
    ).as(:arrow)
   end
 
-  root(:arrow)
+  root(:group)
 end
 
 def parse(str)
@@ -100,7 +108,7 @@ end
 
 
 
-# puts parse "\\ar@(ul,r)@{=>}[ul]^{wot}_f"
+puts parse "{_{(}->}"
 
 # puts "Undelimited single row"
 
