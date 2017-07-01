@@ -38,7 +38,7 @@ class XY < Parslet::Parser
       str('}')
   end
 
-  rule(:style) do # NOTE: empty style must be valid
+  rule(:arrow_style) do
     str('@') >> group
     # str('@{') >>
     #   match['=.:>~>-'].repeat.as(:style) >>
@@ -56,7 +56,7 @@ class XY < Parslet::Parser
       unit
   end
 
-  rule(:directions) do # TODO: are directions that rigid?
+  rule(:arrow_directions) do # TODO: are directions that rigid?
     str('@(') >>
       (
         ((match['ud'] >> match['rl']) | match['ud'] | match['rl']) >>
@@ -66,7 +66,7 @@ class XY < Parslet::Parser
       str(')')
   end
 
-  rule(:curving) do
+  rule(:arrow_curving) do
     str('@/') >>
       (
         (str('^') | str('_')).as(:direction) >>
@@ -75,7 +75,7 @@ class XY < Parslet::Parser
       str('/')
   end
 
-  rule(:hop) do
+  rule(:arrow_hop) do
     str('[') >>
       match['urld'].repeat.as(:hop) >>
       str(']')
@@ -85,11 +85,11 @@ class XY < Parslet::Parser
     str('<') >>
       (str('+') | str('-')) >>
       match['[0-9]'].repeat >>
-      rule(:length) >>
+      length >>
       str('>')
   end
 
-  rule(:label) do
+  rule(:arrow_label) do
     (str('^') | str('|') | str('_')).as(:position) >>
       (str('-')).as(:place).maybe >>
       code.as(:content)
@@ -102,7 +102,7 @@ class XY < Parslet::Parser
       style >>
       hop >>
       label.as(:label).repeat
-   ).as(:arrow)
+    ).as(:arrow)
   end
 
   root(:group)

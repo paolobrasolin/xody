@@ -7,6 +7,7 @@ describe XY do
     subject { parser.group }
 
     it { is_expected.to parse('{->}') }
+    it { is_expected.to parse('{}') }
     it { is_expected.to parse('{_{(}->}') }
   end
 end
