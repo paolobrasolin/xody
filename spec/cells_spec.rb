@@ -6,8 +6,8 @@ describe XY do
   describe :cells do
     subject { parser.cells }
 
-    it { is_expected.to parse(' A & B ') }
+    it { is_expected.to parse('A&B') }
     it { is_expected.to parse('A&&&&&&&B') }
-    it { is_expected.to parse('X    & Y') }
+    it { is_expected.to parse('X&Y') }
   end
 end

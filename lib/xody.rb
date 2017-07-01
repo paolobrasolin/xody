@@ -10,21 +10,26 @@ class XY < Parslet::Parser
       str('}')
   }
 
-  rule(:cell) { match['a-z'].repeat.as(:cell) }
+  rule(:cell) { code.as(:cell) }
   rule(:cells) do
     (cell.maybe >> str('&')).repeat >>
-    cell.maybe >> (str('\\') | str('}')).present?
+    cell.maybe #>> (str('\\') | str('}')).present?
   end
+
   rule(:row) { cells.as(:row) }
+  
+
   rule(:rows) do
     (row.maybe >> str('\\')).repeat >>
     (str('}').absent? >> row).maybe >> str('}').present?
   end
 
   rule(:text) { match['a-zA-Z '].repeat(1) }
+  rule(:number) { match['0-9'].repeat(1) }
   rule(:space) { str(' ') }
+
   rule(:code) do
-    (macro | group | text).repeat
+    (match('[\^_()\[\]]') | macro | group | text | number).repeat
   end
   rule(:macro) do
     (str('\\') >> match['a-zA-Z@'].repeat >> space.repeat).as(:macro)
