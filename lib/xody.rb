@@ -2,6 +2,7 @@ require 'parslet'
 require 'yaml'
 
 class XY < Parslet::Parser
+
   rule(:matrix) {
     str("\\xymatrix") >>
       str("nocompile").maybe >>
@@ -10,14 +11,21 @@ class XY < Parslet::Parser
       str('}')
   }
 
+  rule(:matrix_options) do
+    (str('@') >>
+    match('[!A-Z]') >>
+    str('=') >>
+    length).repeat
+  end
+
   rule(:cell) { code.as(:cell) }
+
   rule(:cells) do
     (cell.maybe >> str('&')).repeat >>
     cell.maybe #>> (str('\\') | str('}')).present?
   end
 
   rule(:row) { cells.as(:row) }
-  
 
   rule(:rows) do
     (row.maybe >> str('\\')).repeat >>
@@ -31,6 +39,7 @@ class XY < Parslet::Parser
   rule(:code) do
     (match('[\^_()\[\]]') | macro | group | text | number).repeat
   end
+
   rule(:macro) do
     (str('\\') >> match['a-zA-Z@'].repeat >> space.repeat).as(:macro)
   end
@@ -87,8 +96,8 @@ class XY < Parslet::Parser
   end
 
   rule(:arrow_slide) do
-    str('<') >>
-      (str('+') | str('-')) >>
+    str('@<') >>
+      (str('+') | str('-')).maybe >>
       match['[0-9]'].repeat >>
       length >>
       str('>')
@@ -100,15 +109,43 @@ class XY < Parslet::Parser
       code.as(:content)
   end
 
+  rule(:arrow_permutable_option) do
+    arrow_style | arrow_curving | arrow_slide
+  end
+
   rule(:arrow) do
     (
       str('\\ar') >>
-      directions >>
-      style >>
-      hop >>
-      label.as(:label).repeat
+      arrow_directions.maybe >>
+      arrow_permutable_option.repeat >>
+      arrow_hop >>
+      arrow_label.as(:label).repeat
     ).as(:arrow)
   end
 
+  rule(:cell_content) do
+    (arrow | match('[\^_()\[\]]') | macro | group | text | number).repeat
+  end
+
+  rule(:point) do 
+    str('(') >> 
+    (str('+') | str('-')).maybe >> 
+    match('\d').repeat >> 
+    str(',') >>
+    match('\d').repeat >> 
+    str(')')
+  end
+
+  rule(:two_arrow) do
+    str('\\ar@') >> 
+    group.maybe >> 
+    point >>
+    str(';') >> 
+    point
+  end
+
+  rule(:freccia) do
+
+  end
   root(:group)
 end

@@ -6,6 +6,6 @@ describe XY do
   describe :curving do
     subject { parser.curving }
 
-    it { is_expected.to parse('@/^/') }
+    it { is_expected.to parse('@/^1pc/') }
   end
 end
