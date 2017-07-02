@@ -59,14 +59,42 @@ class XY < Parslet::Parser
     #   str('}')
   end
 
+=begin
+pt := a point is 1/72.27 inch, that means about 0.0138 inch.
+mm := a millimeter
+cm := a centimeter
+in := inch
+ex := height of an 'x' in the current font
+em := width of an 'M' (uppercase) in the current font
+bp := a big point is 1/72 inch ~ 0.0139 inch.
+pc := pica
+dd := didôt
+cc := cîcero
+nd := new didot
+nc := new cicero
+sp := scaled point
+SOURCE: Wiki.
+=end
   rule(:unit) do 
-    str('pt') | str('em') | str('sp') | str('in') | str('pc') | str('mm') | str('cm')
+    str('pt') | 
+    str('mm') | 
+    str('cm') | 
+    str('in') | 
+    str('ex') | 
+    str('em') | 
+    str('bp') | 
+    str('pc') | 
+    str('dd') | 
+    str('cc') | 
+    str('nc') | 
+    str('sp')
   end
 
   rule(:length) do # TODO: check all formats
       (str('+') | str('-')).maybe >>
       match['0-9'].repeat >>
-      (str('.') >> match['0-9'].repeat).maybe >>
+      (str('.') >> 
+      match['0-9'].repeat).maybe >>
       unit
   end
 

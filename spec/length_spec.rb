@@ -12,5 +12,7 @@ describe XY do
     it { is_expected.to parse('-4pc') }
     it { is_expected.to parse('2mm') }
     it { is_expected.to parse('2cm') }
+    it { is_expected.to parse('2cm') }
+    it { is_expected.to parse('-2bp') }
   end
 end
