@@ -33,15 +33,22 @@ class XY < Parslet::Parser
   end
 
   rule(:text) { match['a-zA-Z '].repeat(1) }
-  rule(:number) { match['0-9'].repeat(1) }
+  rule(:integer) { match['0-9'].repeat(1) }
+    # an integer is god-given.
+  rule(:ciphers) { match['0-9'].repeat(1) }
+    # a bunch of ciphers "is" an integer.
+  rule(:float) { ciphers >> (str('.') >> ciphers).maybe }
+    # a float is digits - (colon - digits).maybe.
   rule(:space) { str(' ') }
 
   rule(:code) do
-    (match('[\^_()\[\]]') | macro | group | text | number).repeat
+    (match('[\^_()\[\]]') | macro | group | text | float).repeat
   end
 
   rule(:macro) do
-    (str('\\') >> match['a-zA-Z@'].repeat >> space.repeat).as(:macro)
+    (str('\\') >> 
+    match['a-zA-Z@'].repeat >> 
+    space.repeat).as(:macro)
   end
 
   rule(:group) do
@@ -54,9 +61,6 @@ class XY < Parslet::Parser
 
   rule(:arrow_style) do
     str('@') >> group
-    # str('@{') >>
-    #   match['=.:>~>-'].repeat.as(:style) >>
-    #   str('}')
   end
 
 =begin
@@ -90,11 +94,9 @@ SOURCE: Wiki.
     str('sp')
   end
 
-  rule(:length) do # TODO: check all formats
+  rule(:length) do
       (str('+') | str('-')).maybe >>
-      match['0-9'].repeat >>
-      (str('.') >> 
-      match['0-9'].repeat).maybe >>
+      float >>
       unit
   end
 
@@ -126,7 +128,6 @@ SOURCE: Wiki.
   rule(:arrow_slide) do
     str('@<') >>
       (str('+') | str('-')).maybe >>
-      match['[0-9]'].repeat >>
       length >>
       str('>')
   end
@@ -152,28 +153,23 @@ SOURCE: Wiki.
   end
 
   rule(:cell_content) do
-    (arrow | match('[\^_()\[\]]') | macro | group | text | number).repeat
+    (arrow | match('[\^_()\[\]]') | macro | group | text | ciphers).repeat
   end
 
   rule(:point) do 
     str('(') >> 
     (str('+') | str('-')).maybe >> 
-    match('\d').repeat >> 
-    str(',') >>
-    match('\d').repeat >> 
+    ciphers >> str(',') >> ciphers >> 
     str(')')
   end
 
   rule(:two_arrow) do
-    str('\\ar@') >> 
-    group.maybe >> 
+    str('\\ar') >> 
+    arrow_permutable_option.repeat.maybe >> 
     point >>
     str(';') >> 
     point
   end
 
-  rule(:freccia) do
-
-  end
   root(:group)
 end
