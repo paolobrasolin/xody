@@ -3,8 +3,8 @@ require 'rspec_support'
 describe XY do
   let(:parser) { XY.new }
 
-  describe :hop do
-    subject { parser.hop }
+  describe :arrow_hop do
+    subject { parser.arrow_hop }
 
     it { is_expected.to parse('[]') }
     it { is_expected.to parse('[u]') }
