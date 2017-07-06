@@ -10,5 +10,7 @@ describe XY do
     it { is_expected.to parse('\cos( x )') }
     it { is_expected.to parse(' F_{a,b}') }
     it { is_expected.to parse(' 5^3 ') }
+    it { is_expected.to parse(' foo bar\n baz\n\n ') }
+
   end
 end
