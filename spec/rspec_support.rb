@@ -1,7 +1,9 @@
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start do
+  add_filter '/spec/'
+end
 
 require 'rspec'
 
-require_relative '../lib/parslet/rig/rspec'
+require 'parslet_matchers.rb'
 require_relative '../lib/xy_parser.rb'
