@@ -7,5 +7,8 @@ describe XY do
     subject { parser.matrix }
 
     it { is_expected.to parse('\xymatrix{A & B}') }
+    it { is_expected.to parse('\xymatrix{A & B \\ C & D}') }
+    it { is_expected.to parse("\\xymatrix{A\\ar[r]\\ar[d] & B\\ar[d] \\\\ C\\ar[r] & D}") }
+    it { is_expected.to parse("\\xymatrix{\nA\\\\}") }
   end
 end

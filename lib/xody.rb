@@ -5,11 +5,18 @@ class XY < Parslet::Parser
 
   rule(:matrix) {
     str("\\xymatrix") >>
-      str("nocompile").maybe >>
-      str('{') >>
-      rows.as(:matrix) >>
-      str('}')
+    matrix_options.maybe >>
+    whitespace.maybe >>
+    str('{') >>
+    # whitespace.maybe >>
+    rows.as(:matrix) >>
+    whitespace.maybe >>
+    str('}')
   }
+
+  rule(:whitespace) do
+    match('[ \t\r\n\f]')
+  end
 
   rule(:matrix_options) do
     (str('@') >>
@@ -22,7 +29,7 @@ class XY < Parslet::Parser
 
   rule(:cells) do
     (cell.maybe >> str('&')).repeat >>
-    cell.maybe #>> (str('\\') | str('}')).present?
+    cell.maybe
   end
 
   rule(:row) { cells.as(:row) }
@@ -153,7 +160,7 @@ SOURCE: Wiki.
   end
 
   rule(:cell_content) do
-    (arrow | match('[\^_()\[\]]') | macro | group | text | ciphers).repeat
+    (arrow | match('[\^_()\[\]]') | macro | group | text | ciphers | whitespace).repeat
   end
 
   rule(:point) do 
