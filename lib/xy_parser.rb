@@ -115,16 +115,24 @@ class XYParser < Parslet::Parser
   end
 
   rule(:rows) do
-    (row.maybe >> str('\\')).repeat >> row
+    (row.maybe >> str('\\\\')).repeat >>
+      # row
+      (match('\s*}').absent? >> row | whitespace.repeat)
   end
 
   rule(:row) { cells.as(:row) }
 
   rule(:cells) do
-    (cell >> str('&')).repeat >> cell
+    (cell >> str('&')).repeat >>
+      # cell
+      (match('\s*}').absent? >> cell | whitespace.repeat)
   end
 
-  rule(:cell) { code.as(:cell) }
+  rule(:cell) { cell_code.as(:cell) }
+
+  rule(:cell_code) do
+    (reserveds | symbols | macro | group | letters | float | whitespace).repeat
+  end
 
   # XY: CETERA
 
