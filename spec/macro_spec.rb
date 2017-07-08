@@ -8,6 +8,5 @@ describe XY do
 
     it { is_expected.to parse('\cos') }
     it { is_expected.to parse('\glxblt') }
-    it { is_expected.to parse('\@macrod@ings@it') }
   end
 end

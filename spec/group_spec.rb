@@ -6,8 +6,9 @@ describe XY do
   describe :group do
     subject { parser.group }
 
-    it { is_expected.to parse('{->}') }
     it { is_expected.to parse('{}') }
-    it { is_expected.to parse('{_{(}->}') }
+    it { is_expected.to parse('{foo}') }
+    it { is_expected.to parse('{foo{bar}baz}') }
+    it { is_expected.to parse('{foo{bar}baz{{qux}zot}}') }
   end
 end

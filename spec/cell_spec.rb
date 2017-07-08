@@ -3,8 +3,8 @@ require 'rspec_support'
 describe XY do
   let(:parser) { XY.new }
 
-  describe :cell_content do
-    subject { parser.cell_content }
+  describe :cell do
+    subject { parser.cell }
 
     it { is_expected.to parse('X\ar[dr]') }
     it { is_expected.to parse('XY\ar@<2pt>@/_1pc/[dr]') }

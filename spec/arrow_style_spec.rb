@@ -7,6 +7,13 @@ describe XY do
     subject { parser.arrow_style }
 
     it { is_expected.to parse('@{->}') }
-    it { is_expected.to parse('@{_{(}->}') }
+    it { is_expected.to parse('@{|->}') }
+    it { is_expected.to parse('@{-}') }
+    it { is_expected.to parse('@{^{(}->}') }
+    it { is_expected.to parse('@{->>}') }
+    it { is_expected.to parse('@{.>}') }
+    it { is_expected.to parse('@{-->}') }
+    it { is_expected.to parse('@{=>}') }
+    it { is_expected.to parse('@{~>}') }
   end
 end
