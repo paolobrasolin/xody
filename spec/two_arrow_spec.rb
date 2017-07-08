@@ -1,7 +1,7 @@
 require 'rspec_support'
 
-describe XY do
-  let(:parser) { XY.new }
+describe XYParser do
+  let(:parser) { XYParser.new }
 
   describe :two_arrow do
     subject { parser.two_arrow }

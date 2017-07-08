@@ -1,7 +1,7 @@
 require 'rspec_support'
 
-describe XY do
-  let(:parser) { XY.new }
+describe XYParser do
+  let(:parser) { XYParser.new }
 
   describe :matrix do
     subject { parser.matrix }
@@ -20,19 +20,19 @@ describe XY do
     it { is_expected.to parse('\xymatrix{ A}') }
     it { is_expected.to parse('\xymatrix{A }') }
 
-    it { is_expected.to parse <<~'XY'.strip
+    it { is_expected.to parse <<~'CODE'.strip
       \xymatrix{
         A
       }
-    XY
+    CODE
     }
 
-    it { is_expected.to parse <<~'XY'.strip
+    it { is_expected.to parse <<~'CODE'.strip
       \xymatrix{
         A & B \\
         C & D \\
       }
-    XY
+    CODE
     }
   end
 end

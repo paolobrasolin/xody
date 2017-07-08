@@ -2,7 +2,7 @@
 require 'parslet'
 require 'yaml'
 
-class XY < Parslet::Parser
+class XYParser < Parslet::Parser
 
   # TEX: ATOMS
 

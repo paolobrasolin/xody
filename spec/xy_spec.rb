@@ -1,30 +1,30 @@
 require 'rspec_support'
 
-describe XY do
-  subject { XY.new }
+describe XYParser do
+  subject { XYParser.new }
 
-  it { is_expected.to parse <<~'XY'.strip
+  it { is_expected.to parse <<~'CODE'.strip
     \xymatrix{
       A & B \\
       C & D \\
     }
-  XY
+  CODE
   }
 
-  it { is_expected.to parse <<~'XY'.strip
+  it { is_expected.to parse <<~'CODE'.strip
     \xymatrix{
       A\ar[r] & B\ar[d]\ar[dl] \\
       C\ar[r] & D \\
     }
-  XY
+  CODE
   }
 
-  it { is_expected.to parse <<~'XY'.strip
+  it { is_expected.to parse <<~'CODE'.strip
     \xymatrix{
       A\ar[r] & B\ar[d]\ar[dl] \\
       C\ar[r] & D \\
     }
-  XY
+  CODE
   }
 
 end

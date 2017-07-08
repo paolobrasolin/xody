@@ -1,7 +1,7 @@
 require 'rspec_support'
 
-describe XY do
-  let(:parser) { XY.new }
+describe XYParser do
+  let(:parser) { XYParser.new }
 
   describe :arrow_hop do
     subject { parser.arrow_hop }
