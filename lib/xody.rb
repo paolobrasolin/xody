@@ -1,7 +1,10 @@
+# coding: utf-8
 require 'parslet'
 require 'yaml'
 
 class XY < Parslet::Parser
+
+  rule(:whitespace) { match('\s') }
 
   rule(:matrix) {
     str("\\xymatrix") >>
@@ -39,7 +42,7 @@ class XY < Parslet::Parser
     (str('}').absent? >> row).maybe >> str('}').present?
   end
 
-  rule(:text) { match['a-zA-Z '].repeat(1) }
+  rule(:text) { match['a-zA-Z'].repeat(1) }
   rule(:integer) { match['0-9'].repeat(1) }
     # an integer is god-given.
   rule(:ciphers) { match['0-9'].repeat(1) }
@@ -49,12 +52,12 @@ class XY < Parslet::Parser
   rule(:space) { str(' ') }
 
   rule(:code) do
-    (match('[\^_()\[\]]') | macro | group | text | float).repeat
+    (match('[\^_()\[\]]') | macro | group | text | float | whitespace).repeat
   end
 
   rule(:macro) do
-    (str('\\') >> 
-    match['a-zA-Z@'].repeat >> 
+    (str('\\') >>
+    match['a-zA-Z@'].repeat >>
     space.repeat).as(:macro)
   end
 
@@ -86,18 +89,18 @@ nc := new cicero
 sp := scaled point
 SOURCE: Wiki.
 =end
-  rule(:unit) do 
-    str('pt') | 
-    str('mm') | 
-    str('cm') | 
-    str('in') | 
-    str('ex') | 
-    str('em') | 
-    str('bp') | 
-    str('pc') | 
-    str('dd') | 
-    str('cc') | 
-    str('nc') | 
+  rule(:unit) do
+    str('pt') |
+    str('mm') |
+    str('cm') |
+    str('in') |
+    str('ex') |
+    str('em') |
+    str('bp') |
+    str('pc') |
+    str('dd') |
+    str('cc') |
+    str('nc') |
     str('sp')
   end
 
@@ -163,20 +166,20 @@ SOURCE: Wiki.
     (arrow | match('[\^_()\[\]]') | macro | group | text | ciphers | whitespace).repeat
   end
 
-  rule(:point) do 
-    str('(') >> 
-    (str('+') | str('-')).maybe >> 
-    ciphers >> str(',') >> ciphers >> 
+  rule(:point) do
+    str('(') >>
+    (str('+') | str('-')).maybe >>
+    ciphers >> str(',') >> ciphers >>
     str(')')
   end
 
   rule(:two_arrow) do
-    str('\\ar') >> 
-    arrow_permutable_option.repeat.maybe >> 
+    str('\\ar') >>
+    arrow_permutable_option.repeat.maybe >>
     point >>
-    str(';') >> 
+    str(';') >>
     point
   end
 
-  root(:group)
+  root(:matrix)
 end
