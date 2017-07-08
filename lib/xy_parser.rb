@@ -1,6 +1,5 @@
 # coding: utf-8
 require 'parslet'
-require 'yaml'
 
 class XYParser < Parslet::Parser
 
