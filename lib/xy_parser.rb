@@ -18,6 +18,11 @@ class XYParser < Parslet::Parser
   rule(:digits) { match['0-9'].repeat(1) }
   rule(:symbols) { match['!"\'()*+,-./:;<=>?@\[\]`'].repeat(1) }
   rule(:reserveds) { match['#$\^_|~'].repeat(1) } # and %&\{}
+  rule(:escapeds) do
+    (
+      str('\{') | str('\}')
+    ).repeat(1)
+  end
 
   rule(:integer) { digits }
   rule(:float) { digits.maybe >> str('.') >> digits | digits }
@@ -27,11 +32,11 @@ class XYParser < Parslet::Parser
   # TEX: BASICS
 
   rule(:macro) do
-    str('\\') >> letters
+    str('\\') >> (letters | str('\\'))
   end
 
   rule(:code) do
-    (reserveds | symbols | macro | group | letters | float | whitespace).repeat
+    (escapeds | reserveds | symbols | macro | group | letters | float | whitespace).repeat
   end
 
   rule(:group) { str('{') >> code >> str('}') }
@@ -79,39 +84,36 @@ class XYParser < Parslet::Parser
   end
 
   rule(:arrow_label) do
-    (str('^') | str('|') | str('_')).as(:position) >>
-      (str('-')).maybe.as(:centered) >>
-      code.as(:content)
+    (str('^') | str('|') | str('_')) >>
+      (str('-')).maybe >>
+      code
   end
 
   rule(:arrow) do
-    (
-      str('\\ar') >>
-      arrow_option.repeat >>
-      arrow_hop >>
-      arrow_label.as(:label).repeat
-    ).as(:arrow)
+    str('\\ar') >>
+    arrow_option.repeat >>
+    arrow_hop >>
+    arrow_label.repeat
   end
 
   # XY: MATRICES
 
   rule(:matrix) {
     str("\\xymatrix") >>
+      matrix_options.repeat >>
       str('{') >>
       rows.as(:matrix) >>
       str('}')
   }
 
   rule(:matrix_options) do
+    str('@') >>
+    str('!').maybe >>
+    match['RCMWHL'].maybe >>
     (
-      str('@') >>
-      str('!').maybe >>
-      match['RCMWHL'].maybe >>
-      (
-        (str('+') | str('+=') | str('=') | str('-=') | str('-')) >>
-        length
-      ).maybe
-    ).repeat
+      (str('+') | str('+=') | str('=') | str('-=') | str('-')) >>
+      length
+    ).maybe
   end
 
   rule(:rows) do
@@ -128,10 +130,14 @@ class XYParser < Parslet::Parser
       (match('\s*}').absent? >> cell | whitespace.repeat)
   end
 
-  rule(:cell) { cell_code.as(:cell) }
+  rule(:cell) do
+    (
+      arrow.as(:arrow) | cell_code.as(:cell_code)
+    ).repeat.as(:cell)
+  end
 
   rule(:cell_code) do
-    (reserveds | symbols | macro | group | letters | float | whitespace).repeat
+    escapeds | reserveds | symbols | macro | group | letters | float | whitespace
   end
 
   # XY: CETERA
